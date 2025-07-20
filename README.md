@@ -1,92 +1,76 @@
-# hotel-reservation-system
-# Proje Analizi ve Spesifikasyon Dokümanı: Multi-Tenant Otel Rezervasyon Platformu
+# Project: Dynamic Hotel Experience Platform
 
-## 1. Proje Vizyonu ve Kapsamı
+**A next-generation, performance-focused platform engineered to deliver a unique and personalized booking experience for any hotel.**
 
-Bu doküman, Elektrwaweb Talya Bilişim bünyesinde geliştirilecek olan, birden fazla otelin kayıt olarak kendi envanterlerini, fiyatlarını ve rezervasyonlarını yönetebileceği **Multi-Tenant (Çok Kiracılı) bir Otel Rezervasyon Platformu**'nun analizini ve teknik yol haritasını içerir.
+## 1. Vision & Scope
 
-Projenin temel vizyonu, hem son kullanıcıya zengin filtreleme ve keşif araçlarıyla kişiselleştirilmiş bir deneyim sunmak hem de otel işletmelerine kendi operasyonlarını yönetecekleri ve pazarlayacakları güçlü bir panel sağlamaktır.
+The primary vision is to create a highly adaptable software platform that allows any hotel to offer its guests a world-class, lightning-fast digital experience. This is not just a website template; it is an intelligent, scalable ecosystem.
 
-## 2. Platformun Ana Sistemleri
+The initial development will focus on the **Client-Facing Application**—the beautiful and intuitive interface that guests will interact with. This application will be architected to dynamically render content and features based on data provided by a backend API, making it instantly configurable for any hotel partner.
 
-Platform, birbiriyle entegre çalışan modüler sistemler üzerine inşa edilecektir:
+## 2. Core Architectural Principles
 
-#### Sistem 1: Kullanıcı ve Kimlik Yönetim Sistemi
-Bu sistem, platforma giren her aktörün kimliğini, rolünü ve yetkilerini yönetir.
-*   **Temel Kimlik Doğrulama:** E-posta/Şifre ile Kayıt, Giriş, Çıkış, Şifre Sıfırlama.
-*   **Rol Tabanlı Yetkilendirme (RBAC):**
-    *   **Müşteri (Customer):** Otel arama, rezervasyon yapma ve kendi profilini yönetme yetkisine sahiptir.
-    *   **Otel Yöneticisi (Hotel Admin):** Yalnızca kendi oteline ait içerik, oda, fiyat ve rezervasyonları yönetir.
-    *   **Platform Yöneticisi (Super Admin):** Tüm sistemi denetler ve yeni otel kayıtlarını onaylar.
-*   **Kullanıcı Profili:** Kişisel bilgiler, geçmiş/gelecek rezervasyonlar ve favoriye eklenen otellerin listesi.
-*   **(Öneri) Sosyal Medya ile Giriş:** Google/Facebook entegrasyonu ile hızlı kayıt/giriş.
+To achieve true scalability and flexibility, the platform is built on a fundamental principle: **Admin-Driven UI.** The frontend application is a powerful rendering engine, not a static brochure. Its features, content, and even layout are dictated by the data it receives from the hotel's administrative panel.
 
-#### Sistem 2: Otel ve İçerik Yönetim Sistemi
-Otel yöneticilerinin platformdaki dijital vitrinlerini oluşturup yönettikleri alandır.
-*   **Otel Profili:** Otel adı, yıldız sayısı, açıklama, adres ve iletişim bilgileri.
-*   **Coğrafi Konum (Geolocation):** Harita üzerinde gösterim için otelin enlem ve boylam bilgisinin kaydedilmesi.
-*   **Oda Yönetimi:** Farklı oda tipleri (örn: Süit, Standart) ve bu tiplere bağlı fiziksel oda envanterinin (Oda No: 101, 102 vb.) yönetimi.
-*   **Görsel Yönetimi:** Otel ve oda galerileri için fotoğraf yükleme ve yönetimi.
-*   **İmkan ve Olanak Yönetimi (Amenities):** Otel yöneticisinin, platformda tanımlı olan `[Havuz, Spa, Wifi, Otopark, Restoran]` gibi imkanlardan kendi tesisinde olanları işaretleyerek profilini zenginleştirmesi.
+This architecture provides critical advantages:
 
-#### Sistem 3: Arama, Keşif ve Filtreleme Motoru
-Platformun kullanıcıya dönük en akıllı ve dinamik parçasıdır.
-*   **Ana Arama:** Konum, giriş/çıkış tarihi ve misafir sayısına göre arama.
-*   **Detaylı Filtreleme:**
-    *   Fiyat Aralığı (Min-Max Slider).
-    *   Otel Yıldız Sayısı.
-    *   Pansiyon Tipi (Her Şey Dahil, Oda Kahvaltı vb.).
-    *   Tesis İmkanları (Kullanıcı, "Havuz" ve "Spa" seçerek sadece bu imkanlara sahip otelleri listeler).
-    *   Misafir Değerlendirme Puanı.
-*   **Sonuç Gösterimi:** Hem klasik liste görünümü hem de filtrelenmiş sonuçların gösterildiği interaktif bir harita görünümü.
+*   **Scalability:** New hotels can onboard without requiring any changes to the frontend codebase.
+*   **Deep Personalization:** Each hotel can showcase its unique character, services, and local environment. The platform adapts to the hotel, not the other way around.
+*   **Maintainability:** By decoupling features from the core codebase, we create a system that is simpler to manage, debug, and upgrade. We build a feature's logic once, and it becomes available to any hotel that chooses to activate it.
 
-#### Sistem 4: Değerlendirme ve Yorum Sistemi
-Platformun güvenilirliğini ve şeffaflığını sağlayan sosyal kanıt mekanizmasıdır.
-*   **Puanlama:** Genel puana ek olarak Temizlik, Personel, Konum gibi alt kategorilerde puanlama.
-*   **Güvenlik:** **Yalnızca "Onaylı Konaklama" yapmış kullanıcıların** yorum ve puanlama yapabilmesi.
-*   **Etkileşim:** Otel yöneticisinin, yapılan yorumlara herkese açık olarak cevap verebilmesi.
+## 3. Key Features & Innovations
 
-#### Sistem 5: Rezervasyon ve Fiyatlandırma Motoru
-Platformun ticari işlemlerinin ve en karmaşık iş mantığının yönetildiği çekirdek sistemdir.
-*   **Anlık Müsaitlik Kontrolü:** Seçilen tarihlerde bir odanın rezerve edilebilir olup olmadığının anlık kontrolü.
-*   **Dinamik Fiyatlandırma:** Oda temel fiyatına ek olarak, otel yöneticisinin tanımlayabileceği kurallara göre fiyatın dinamik olarak hesaplanması (örn: Sezon, hafta sonu, uzun konaklama indirimleri).
-*   **Rezervasyon Akışı:** Oda seçimi, fiyat dökümünün şeffaf gösterimi, misafir bilgileri ve ödeme simülasyonu ile rezervasyonun tamamlanması.
+The platform will go beyond standard booking functionality by offering a suite of dynamic modules that a hotel administrator can enable and customize.
 
-## 3. Proje Fazları ve Geliştirme Stratejisi
+### `Module 1: The Interactive Local Guide`
+*   **The Concept:** Instead of a generic map, we offer guests a curated guide to the hotel's surroundings, filled with insider tips.
+*   **Admin Customization:** The hotel manager can log into their panel and add points of interest to their map under categories they define (e.g., "Best Coffee Nearby," "Hidden Photo Spots," "Local Artisan Shops").
+*   **Frontend Logic:** The application fetches the list of guide points for the specific hotel. If the list exists, it renders the rich, interactive map. If the list is empty, the entire section is elegantly hidden, maintaining a clean UI.
 
-Projenin büyüklüğü göz önüne alındığında, özellikler mantıksal fazlara ayrılmıştır. 4 haftalık staj sürecinde **Faz 1'in tamamlanması ana hedeftir.**
+### `Module 2: On-Demand Experience Customization`
+*   **The Concept:** Allow guests to enhance their stay by adding services and amenities directly during the booking process.
+*   **Admin Customization:** The hotel manager defines a list of available add-ons and their prices (e.g., "Champagne on Arrival," "Airport Transfer," "Late Check-out").
+*   **Frontend Logic:** During the booking flow, the application checks for available add-ons for that hotel. If they exist, it presents an "Upgrade Your Stay" step. If not, this step is seamlessly skipped.
 
-#### FAZ 1: MVP (Minimum Viable Product - Staj Hedefi)
-- [ ] **Kullanıcı Sistemi:** Müşteri ve Otel Yöneticisi rolleriyle kayıt/giriş.
-- [ ] **Otel Yönetimi:** Otel yöneticisinin kendi otelini, odalarını ve temel fiyatını ekleyebilmesi.
-- [ ] **Temel Arama:** Müşterinin konum ve tarihe göre otel arayabilmesi.
-- [ ] **Rezervasyon Akışı:** Müşterinin bir odaya rezervasyon yapabilmesi.
-- [ ] **Temel Değerlendirme:** Konaklama sonrası müşterinin puan/yorum bırakabilmesi.
+### `Module 3: Curated Experience Packages`
+*   **The Concept:** Sell a complete holiday, not just a room. This module allows hotels to bundle rooms with services for a special price.
+*   **Admin Customization:** The manager can create packages like a "Romantic Getaway" (bundling a suite, a spa treatment, and the "Champagne on Arrival" add-on) or a "Family Adventure" package.
+*   **Frontend Logic:** The application fetches and displays these beautifully presented packages. When a user selects one, all included items are automatically added to the reservation.
 
-#### FAZ 2: Gelişmiş Özellikler (Platformun Olgunlaşması)
-- [ ] Gelişmiş Filtreleme Motoru (imkanlar, yıldız, fiyat aralığı).
-- [ ] Favorilere Ekleme Sistemi ve Kullanıcı Profili.
-- [ ] Harita Üzerinde Otelleri Gösterme.
-- [ ] Kural Tabanlı Dinamik Fiyatlandırma Motoru.
+### `Module 4: Immersive 360° Virtual Tours`
+*   **The Concept:** Build ultimate trust and excitement by allowing guests to virtually step inside the property before they arrive.
+*   **Admin Customization:** The hotel manager simply provides a URL to their externally hosted 360° tour.
+*   **Frontend Logic:** The application checks if the "Virtual Tour URL" field contains data. If yes, a "Take a Virtual Tour" button is displayed prominently. If the field is empty, the button does not appear.
 
-#### FAZ 3: Stratejik Vizyon (Gelecek Potansiyeli)
-- [ ] Akıllı Otel Karşılaştırma Aracı.
-- [ ] Fiyat Takibi ve Alarm Kurma Özelliği.
-- [ ] Kişiselleştirilmiş Öneri Motoru.
-- [ ] Otel Yöneticileri için Analitik Raporlama Paneli.
-- [ ] Promosyon Kodu ve Reklam Modülleri.
-- [ ] Misafir-Otel Arası Direkt Mesajlaşma.
+## 4. Technology Stack
 
-## 4. Teknik Mimarî ve Geliştirme Yaklaşımı
+The technology has been meticulously chosen to support our core principles of performance, scalability, and exceptional user experience.
 
-*   **Geliştirme Yaklaşımı: Backend-First**
-    *   Öncelikle projenin tüm iş mantığını barındıran API altyapısı tasarlanacak, kodlanacak ve test edilecektir. Sağlam bir backend temeli oluşturulduktan sonra ön yüz geliştirmesi daha verimli ilerleyecektir.
+| Category                | Technology                                                                                                  | **Advantage & Rationale**                                                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Core Framework**      | **`Next.js`**                                                                                               | **Unmatched Performance.** Enables Server-Side Rendering (SSR) to deliver pre-built, instantly interactive pages to the user.      |
+| **Programming Language**| **`JavaScript (JSX)`**                                                                                      | The industry standard for the React/Next.js ecosystem, enabling rapid development.                                               |
+| **Styling**             | **`Tailwind CSS`**                                                                                          | **Rapid & Consistent UI Development.** A utility-first framework that allows us to build custom, modern designs with ease.       |
+| **UI/UX Design**        | **`Figma`**                                                                                                 | **Strategic Planning.** Allows us to design and validate the user experience before writing a single line of code, saving time. |
+| **Deployment**          | **`Vercel`**                                                                                                | **Optimized for Next.js.** Provides the best-in-class infrastructure for performance, global distribution, and seamless CI/CD.   |
 
-*   **Teknoloji Yığını (Tech Stack):**
-    *   **Backend:** Node.js
-    *   **Framework:** Express.js
-    *   **Veritabanı:** PostgreSQL
-    *   **Temel Kütüphaneler:** `pg` (veya Sequelize), `bcryptjs`, `jsonwebtoken`, `cors`, `dotenv`.
+## 5. Development Methodology & Roadmap
 
-*   **Kavramsal Veritabanı Mimarisi:**
-    *   Sistem, veriler arasındaki karmaşık ve çok-çok'a (many-to-many) ilişkileri yönetmek üzere tasarlanacaktır. `hotels`, `users`, `rooms` gibi ana tablolara ek olarak; imkanları otellerle eşleştiren `hotel_amenities`, favorileri kullanıcılarla eşleştiren `user_favorites` ve fiyatlandırma kurallarını tutan `pricing_rules` gibi birçok ilişkisel ve detay tablosu kullanılacaktır.
+We will follow a structured, phased approach to ensure quality and focus at every stage of development.
+
+### `Phase 1: Architectural Foundation & Visual Blueprint`
+1.  **Design in Figma:** Create a comprehensive, high-fidelity design of the entire user journey, including how the dynamic modules will appear.
+2.  **Project Scaffolding:** Initialize the Next.js and Tailwind CSS project.
+3.  **Component Library:** Develop a set of reusable, stateless UI components (e.g., `Card`, `Button`, `Modal`) that will form the building blocks of the application.
+
+### `Phase 2: Static Implementation & UI Construction`
+1.  **Static Page Building:** Construct the full UI of the application using the component library, but with placeholder/mock data. At the end of this phase, we will have a fully interactive, but static, version of the site.
+2.  **Responsiveness:** Ensure the design is pixel-perfect across all devices, from mobile phones to desktop monitors.
+
+### `Phase 3: API Integration & Dynamic Logic`
+1.  **Data Fetching:** Connect the application to the backend API. Implement the core logic to fetch hotel details, room availability, and all dynamic module data (`Local Guide` points, `Add-ons`, etc.).
+2.  **Conditional Rendering:** Implement the `if/else` logic that powers the Admin-Driven UI, showing or hiding entire sections of the application based on the API response.
+
+### `Phase 4: Core Business Logic & Finalization`
+1.  **Booking Engine:** Implement the complete, multi-step reservation process, including date selection, guest information, and submitting the final reservation data to the API.
+2.  **Performance Optimization:** Conduct a final review of the application, optimizing image loading, code splitting, and other metrics to ensure we meet our "lightning-fast" objective.
