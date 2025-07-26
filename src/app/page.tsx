@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import BookingForm from '@/components/sections/BookingForm';
+import AboutSection from '@/components/sections/AboutSection'; // <-- The new section component is imported.
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // This array holds the data for our hero slider.
@@ -35,7 +36,7 @@ export default function Home() {
     const timer = setInterval(goToNext, 5000); // Changes slide every 5 seconds
     // This cleanup function clears the interval when the component is unmounted.
     return () => clearInterval(timer);
-  }, [currentIndex]); // The effect re-runs if currentIndex changes, resetting the timer.
+  }, [currentIndex]);
 
 
   return (
@@ -84,8 +85,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="py-20 bg-gray-50 text-center">
-        <h2 className="text-4xl font-bold">About Us Section</h2>
+      {/* The old placeholder is now replaced with our new component. */}
+      <AboutSection />
+
+      {/* Placeholder for the next section, 'Our Rooms'. */}
+      <section id="rooms" className="py-20 bg-slate-50 text-center">
+        <h2 className="text-4xl font-bold">Our Rooms Section</h2>
       </section>
     </>
   );
