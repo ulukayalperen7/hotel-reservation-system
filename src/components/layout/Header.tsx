@@ -1,3 +1,5 @@
+// File: components/layout/Header.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,57 +11,46 @@ import { cn } from '@/lib/utils';
 import { Globe, Phone, Mail } from 'lucide-react';
 import { FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
+import { hotelConfig } from '../../../hotel.config';
 
+// Import the central configuration file
 
 export default function Header() {
-  // State to track if the user has scrolled down the page.
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // This effect adds a scroll event listener when the component mounts.
   useEffect(() => {
     const handleScroll = () => {
-      // Sets the state to true if user scrolls more than 10px, otherwise false.
       setIsScrolled(window.scrollY > 10);
     };
-
-    // Add the event listener.
     window.addEventListener('scroll', handleScroll);
-
-    // This is a cleanup function. It removes the event listener when the component unmounts
-    // to prevent memory leaks and performance issues.
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []); // The empty array ensures this effect runs only once.
+  }, []);
 
   return (
-    // The 'fixed' position keeps the header at the top of the viewport.
-    // 'transition-all' and 'duration-300' create a smooth animation for background and color changes.
     <header className={cn(
       "fixed top-0 left-0 w-full z-50 transition-all duration-300",
-      {
-        'bg-white shadow-md': isScrolled, // When scrolled, background becomes white with a shadow.
-        'bg-transparent': !isScrolled, // At the top, background is transparent.
-      }
+      { 'bg-white shadow-md': isScrolled, 'bg-transparent': !isScrolled }
     )}>
 
-      {/* ===== TOP BAR - Only visible when scrolled ===== */}
+      {/* ===== TOP BAR ===== */}
       <div className={cn(
         "transition-all duration-300 ease-in-out overflow-hidden",
-        isScrolled ? "max-h-12 opacity-100" : "max-h-0 opacity-0" // Animates height and opacity for a smooth appearance.
+        isScrolled ? "max-h-12 opacity-100" : "max-h-0 opacity-0"
       )}>
         <div className="container mx-auto flex justify-between items-center h-10 px-6 border-b border-slate-200">
-            {/* Contact Info */}
+            {/* Contact Info - Now reads from hotelConfig */}
             <div className="flex items-center space-x-4 text-slate-600 text-xs">
-                <a href="tel:+18881234567" className="flex items-center hover:text-amber-600"><Phone size={14} className="mr-1.5"/> 1-888-123-4567</a>
-                <a href="mailto:contact@talya.com" className="flex items-center hover:text-amber-600"><Mail size={14} className="mr-1.5"/> contact@talya.com</a>
+                <a href={`tel:${hotelConfig.contact.phone}`} className="flex items-center hover:text-amber-600"><Phone size={14} className="mr-1.5"/> {hotelConfig.contact.phone}</a>
+                <a href={`mailto:${hotelConfig.contact.email}`} className="flex items-center hover:text-amber-600"><Mail size={14} className="mr-1.5"/> {hotelConfig.contact.email}</a>
             </div>
-            {/* Social & Language */}
+            {/* Social & Language - Now reads from hotelConfig */}
             <div className="flex items-center space-x-4">
-                <a href="#" className="text-slate-500 hover:text-slate-900"><FaInstagram /></a>
-                <a href="#" className="text-slate-500 hover:text-slate-900"><FaXTwitter /></a>
-                <a href="#" className="text-slate-500 hover:text-slate-900"><FaLinkedin /></a>
-                <div className="w-px h-4 bg-slate-200"></div> {/* Separator */}
+                <a href={hotelConfig.socialLinks.instagram} className="text-slate-500 hover:text-slate-900"><FaInstagram /></a>
+                <a href={hotelConfig.socialLinks.twitter} className="text-slate-500 hover:text-slate-900"><FaXTwitter /></a>
+                <a href={hotelConfig.socialLinks.linkedin} className="text-slate-500 hover:text-slate-900"><FaLinkedin /></a>
+                <div className="w-px h-4 bg-slate-200"></div>
                 <button className="flex items-center text-slate-600 hover:text-amber-600 text-xs">
                     <Globe size={14} className="mr-1.5"/>
                     <span>English</span>
@@ -70,19 +61,20 @@ export default function Header() {
       
       {/* ===== MAIN NAVIGATION ===== */}
       <nav className="container mx-auto flex items-center justify-between p-4 transition-colors duration-300">
+        {/* Hotel Name - Now reads from hotelConfig */}
         <Link 
           href="/" 
           className={cn(
             "text-3xl font-bold tracking-wider hover:scale-105 transition-transform",
             isScrolled ? "text-slate-900" : "text-white"
           )}
-          style={{ textShadow: isScrolled ? 'none' : '2px 2px 6px rgba(0,0,0,0.8)' }} // Shadow is removed on scroll.
+          style={{ textShadow: isScrolled ? 'none' : '2px 2px 6px rgba(0,0,0,0.8)' }}
         >
-          Talya Hotel
+          {hotelConfig.name}
         </Link>
         
         <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Rooms', 'Gallery', 'Contact'].map((item) => (
+            {['About', 'Rooms', 'Services', 'Contact'].map((item) => (
                 <Link
                     key={item}
                     href={`/#${item.toLowerCase()}`}
@@ -93,10 +85,7 @@ export default function Header() {
                     style={{ textShadow: isScrolled ? 'none' : '1px 1px 4px rgba(0,0,0,0.7)' }}
                 >
                     {item}
-                    <span className={cn(
-                        "absolute -bottom-1 left-0 w-0 h-0.5 transition-all group-hover:w-full",
-                        isScrolled ? "bg-amber-500" : "bg-amber-300"
-                    )}></span>
+                    <span className={cn("absolute -bottom-1 left-0 w-0 h-0.5 transition-all group-hover:w-full", isScrolled ? "bg-amber-500" : "bg-amber-300")}></span>
                 </Link>
             ))}
         </div>
