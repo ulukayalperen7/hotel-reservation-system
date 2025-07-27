@@ -1,7 +1,7 @@
 import { Award, Coffee, Wifi, Waves, Wind, UtensilsCrossed, Dumbbell, Sparkles } from 'lucide-react';
 
 export const hotelConfig = {
-    // General information about the hotel
+    
     name: "Talya Hotel",
     contact: {
         phone: "1-888-123-4567",
@@ -57,7 +57,6 @@ export const hotelConfig = {
         { id: 'deluxe', name: "Deluxe Suite", price: 189, image: "/rooms/deluxe.jpg", description: "The pinnacle of luxury with stunning views and premium amenities for an exclusive stay." }
     ],
 
-    // NEW: A list of main hotel services/amenities for its own section.
     services: [
         { id: 'pool', icon: Waves, name: 'Infinity Pool' },
         { id: 'spa', icon: Sparkles, name: 'Wellness & Spa' },

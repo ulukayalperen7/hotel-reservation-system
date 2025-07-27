@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import BookingForm from '@/components/sections/BookingForm';
 import AboutSection from '@/components/sections/AboutSection';
+import ContactSection from '@/components/sections/ContactSection'; // <-- The new Contact section is imported
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { hotelConfig } from '../../hotel.config';
 import RoomsSection from '@/components/sections/RoomSection';
 import ServicesSection from '@/components/sections/ServiceSection';
+
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -57,14 +59,10 @@ export default function Home() {
 
       <AboutSection />
       <RoomsSection />
-      
-      {/* The old placeholder is now replaced with our new dynamic ServicesSection. */}
       <ServicesSection />
-
-      {/* Placeholder for the last section */}
-      <section id="contact" className="py-20 bg-slate-50 text-center">
-        <h2 className="text-4xl font-bold">Contact Us Section</h2>
-      </section>
+      
+      {/* The final placeholder is now replaced with the new ContactSection. */}
+      <ContactSection />
     </>
   );
 }
