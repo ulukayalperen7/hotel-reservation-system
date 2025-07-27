@@ -1,7 +1,4 @@
-// This file acts as the single source of truth for all hotel-specific data.
-// To configure the site for a different hotel, you would primarily edit this file.
-
-import { Award, Coffee, Wifi, Waves, Wind, UtensilsCrossed } from 'lucide-react';
+import { Award, Coffee, Wifi, Waves, Wind, UtensilsCrossed, Dumbbell, Sparkles } from 'lucide-react';
 
 export const hotelConfig = {
     // General information about the hotel
@@ -30,35 +27,9 @@ export const hotelConfig = {
         description: "Discover a world where modern luxury and blissful comfort converge. Located in a prime spot, Talya Hotel offers an unparalleled experience with its sophisticated design, world-class amenities, and a deep commitment to guest satisfaction.",
         image: "/about-image.jpg"
     },
-
-    // A list of available rooms. If a hotel has no Deluxe room, you just remove it from this array.
-    rooms: [
-        {
-            id: 'single',
-            name: "Single Room",
-            price: 89,
-            image: "/rooms/single.jpg", // Placeholder - you'll need to add this image to /public/rooms/
-            description: "Perfect for the solo traveler, offering comfort and style in a compact space."
-        },
-        {
-            id: 'double',
-            name: "Double Room",
-            price: 129,
-            image: "/rooms/double.jpg", // Placeholder
-            description: "Spacious and elegant, ideal for couples seeking a memorable getaway."
-        },
-        {
-            id: 'deluxe',
-            name: "Deluxe Suite",
-            price: 189,
-            image: "/rooms/deluxe.jpg", // Placeholder
-            description: "The pinnacle of luxury with stunning views and premium amenities for an exclusive stay."
-        }
-    ],
-
-    // A list of features or amenities. If a hotel doesn't offer one, remove it from the array.
-    // The icon is the actual component from lucide-react, making it very dynamic.
-    features: [
+    
+    // RENAMED: Features specifically for the About Us section
+    aboutFeatures: [
        {
             id: 'service',
             icon: Award,
@@ -78,4 +49,19 @@ export const hotelConfig = {
             description: "Stay connected with high-speed internet access throughout the resort."
         }
     ],
+
+    // A list of available rooms.
+    rooms: [
+        { id: 'single', name: "Single Room", price: 89, image: "/rooms/single.jpg", description: "Perfect for the solo traveler, offering comfort and style in a compact space." },
+        { id: 'double', name: "Double Room", price: 129, image: "/rooms/double.jpg", description: "Spacious and elegant, ideal for couples seeking a memorable getaway." },
+        { id: 'deluxe', name: "Deluxe Suite", price: 189, image: "/rooms/deluxe.jpg", description: "The pinnacle of luxury with stunning views and premium amenities for an exclusive stay." }
+    ],
+
+    // NEW: A list of main hotel services/amenities for its own section.
+    services: [
+        { id: 'pool', icon: Waves, name: 'Infinity Pool' },
+        { id: 'spa', icon: Sparkles, name: 'Wellness & Spa' },
+        { id: 'fitness', icon: Dumbbell, name: 'Fitness Center' },
+        { id: 'restaurant', icon: UtensilsCrossed, name: 'Fine Dining' }
+    ]
 };

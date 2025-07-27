@@ -7,7 +7,7 @@ import AboutSection from '@/components/sections/AboutSection';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { hotelConfig } from '../../hotel.config';
 import RoomsSection from '@/components/sections/RoomSection';
-
+import ServicesSection from '@/components/sections/ServiceSection';
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -28,7 +28,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [currentIndex]);
 
-
   return (
     <>
       <Header />
@@ -36,13 +35,7 @@ export default function Home() {
         {/* Hero Slider Section */}
         <div className="absolute inset-0 w-full h-full">
           {hotelConfig.heroSlides.map((slide, index) => (
-            <div
-              key={slide.src}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{ backgroundImage: `url(${slide.src})` }}
-            />
+            <div key={slide.src} className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${ index === currentIndex ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url(${slide.src})` }}/>
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
@@ -52,10 +45,7 @@ export default function Home() {
         </div>
         <div className="relative z-10 h-full flex flex-col justify-end items-center p-4 sm:p-8 md:p-12">
           <div className="text-center w-full max-w-4xl">
-              <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6" 
-                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}
-              >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
                 {hotelConfig.heroSlides[currentIndex].title}
               </h1>
           </div>
@@ -66,14 +56,12 @@ export default function Home() {
       </section>
 
       <AboutSection />
-      
-      {/* The old placeholder is now replaced with our new dynamic RoomsSection. */}
       <RoomsSection />
+      
+      {/* The old placeholder is now replaced with our new dynamic ServicesSection. */}
+      <ServicesSection />
 
-      {/* Placeholders for the remaining sections */}
-      <section id="services" className="py-20 bg-white text-center">
-        <h2 className="text-4xl font-bold">Our Services Section</h2>
-      </section>
+      {/* Placeholder for the last section */}
       <section id="contact" className="py-20 bg-slate-50 text-center">
         <h2 className="text-4xl font-bold">Contact Us Section</h2>
       </section>

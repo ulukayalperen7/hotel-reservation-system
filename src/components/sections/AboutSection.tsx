@@ -22,7 +22,7 @@ export default function AboutSection() {
                         
                         {/* Features List - Dynamically generated from hotelConfig.features */}
                         <div className="mt-8 space-y-6">
-                            {hotelConfig.features.map((feature) => (
+                            {hotelConfig.aboutFeatures.map((feature) => (
                                 <div key={feature.id} className="flex items-start space-x-4">
                                     <div className="bg-amber-100 text-amber-600 p-3 rounded-full">
                                         {/* Renders the icon component directly from the config file */}
