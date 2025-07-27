@@ -122,9 +122,11 @@ export default function Header() {
           ))}
         </div>
 
-        <Button className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all">
-          Book Now
-        </Button>
+       <Link href="/booking/search">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all">
+              Book Now
+            </Button>
+        </Link>
       </nav>
     </header>
   );
