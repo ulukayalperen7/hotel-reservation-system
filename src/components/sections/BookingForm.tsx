@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation'; // Handles client-side navigation
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, User, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,38 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 
 export default function BookingForm() {
-  // States to hold the selected check-in and check-out dates.
+  // Router hook to programmatically change routes.
+  const router = useRouter(); 
+  
+  // States to hold all the form data.
   const [checkIn, setCheckIn] = useState<Date | undefined>();
   const [checkOut, setCheckOut] = useState<Date | undefined>();
+  const [adults, setAdults] = useState<string>("2"); // State for adults
+  const [children, setChildren] = useState<string>("0"); // State for children
+
+  // This function runs when the "Search" button is clicked.
+  const handleSearch = () => {
+    // Basic validation to ensure dates are selected.
+    if (!checkIn || !checkOut) {
+      alert("Please select both check-in and check-out dates.");
+      return; // Stop the function if dates are missing.
+    }
+    
+    // This creates a URL-safe query string from our form data.
+    // e.g., "checkIn=2025-08-10&checkOut=2025-08-15&adults=2&children=0"
+    const queryParams = new URLSearchParams({
+        checkIn: format(checkIn, 'yyyy-MM-dd'),
+        checkOut: format(checkOut, 'yyyy-MM-dd'),
+        adults: adults,
+        children: children
+    }).toString();
+
+    // Redirect the user to the search results page with the data in the URL.
+    router.push(`/booking/search?${queryParams}`);
+  };
 
   return (
-    // The main container for the form with a blurred glass effect.
-    <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-2xl w-full max-w-5xl text-slate-800">
+    <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-2xl w-full max-w-5xl text-slate-800 mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
         
         {/* Check-in Date Picker */}
@@ -51,10 +77,10 @@ export default function BookingForm() {
           </Popover>
         </div>
 
-        {/* Adults Selector */}
+        {/* Adults Selector - Now a controlled component using state */}
         <div className="flex flex-col space-y-1">
           <Label htmlFor="adults" className="font-semibold text-xs ml-1">Adults</Label>
-          <Select defaultValue="2">
+          <Select value={adults} onValueChange={setAdults}>
             <SelectTrigger id="adults"><User className="mr-2 h-4 w-4" /><SelectValue /></SelectTrigger>
             <SelectContent>
                 <SelectItem value="1">1 Adult</SelectItem>
@@ -65,10 +91,10 @@ export default function BookingForm() {
           </Select>
         </div>
 
-        {/* Children Selector */}
+        {/* Children Selector - Now a controlled component using state */}
         <div className="flex flex-col space-y-1">
           <Label htmlFor="children" className="font-semibold text-xs ml-1">Children</Label>
-          <Select defaultValue="0">
+          <Select value={children} onValueChange={setChildren}>
             <SelectTrigger id="children"><Users className="mr-2 h-4 w-4" /><SelectValue /></SelectTrigger>
             <SelectContent>
                 <SelectItem value="0">0 Children</SelectItem>
@@ -79,8 +105,8 @@ export default function BookingForm() {
           </Select>
         </div>
 
-        {/* Search Button */}
-        <Button size="lg" className="w-full h-10 bg-amber-500 hover:bg-amber-600 text-white font-bold text-base col-span-1 md:col-span-2 lg:col-span-1">
+        {/* Search Button - Now calls the handleSearch function when clicked */}
+        <Button onClick={handleSearch} size="lg" className="w-full h-10 bg-amber-500 hover:bg-amber-600 text-white font-bold text-base col-span-1 md:col-span-2 lg:col-span-1">
           <Search className="mr-2 h-5 w-5" />
           Search
         </Button>
