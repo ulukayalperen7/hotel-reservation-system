@@ -1,46 +1,14 @@
 import Header from "@/components/layout/Header";
 import Image from "next/image";
-
-/**
- * Fetches hotel data, including room types and images, from the API.
- * Next.js runs this function on the server.
- */
-async function getHotelData() {
-    const baseUrl = process.env.API_BASE_URL;
-    const hotelId = process.env.HOTEL_ID;
-    const token = process.env.API_BEARER_TOKEN;
-
-    const url = `${baseUrl}/hotel/${hotelId}/hotel-definitions?language=TR`;
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-        // This is for performance.
-        // It tells Next.js to cache data for 1 hour.
-        // The page will be very fast after the first visit.
-        next: { revalidate: 3600 } 
-    });
-
-    // If the API response status is not "200 OK", we should stop.
-    if (!response.ok) {
-        throw new Error('API request failed');
-    }
-
-    // Return the JSON data from the response.
-    return response.json();
-}
+import { getHotelDefinitions } from "@/lib/api"; 
 
 /**
  * The GalleryPage component.
- * It is now an 'async' component. This lets us use 'await' inside it.
+ * It is an 'async' component, so we can use 'await' for data fetching.
  */
 export default async function GalleryPage() {
-    // Call our function and wait for the API data.
-    const data = await getHotelData();
-
-    // The API response has an array named 'roomtype'. We get it here.
+    // Call the function from lib/api.ts to get the hotel data.
+    const data = await getHotelDefinitions();
     const rooms = data.roomtype;
 
     return (
@@ -57,17 +25,15 @@ export default async function GalleryPage() {
 
                     <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {/* 
-                          Map over the 'rooms' array we got from the API.
-                          The 'filter' is important to avoid errors if a room has no image.
+                          This part maps over the 'rooms' array fetched from the API.
+                          The '.filter()' ensures that we only try to display rooms that have an image URL.
                         */}
                         {rooms && rooms
                           .filter((room: any) => room['room-image-url'])
                           .map((room: any) => (
                             <div key={room['room-id']} className="relative aspect-square rounded-lg overflow-hidden group">
                                 <Image
-                                    // Use the image URL from the API.
                                     src={room['room-image-url']}
-                                    // Use the room name from the API for the alt text.
                                     alt={room['room-name']}
                                     fill
                                     className="object-cover transition-transform duration-300 group-hover:scale-110"
