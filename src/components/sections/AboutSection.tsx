@@ -1,9 +1,17 @@
 import Image from "next/image";
 import { hotelConfig } from "../../../hotel.config";
+import { motion } from "framer-motion";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="bg-white py-16 sm:py-24">
+    <motion.section
+      id="about"
+      className="bg-white py-16 sm:py-24"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 0.8 }}
+    >
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text Content - All data is now from hotelConfig */}
@@ -48,6 +56,6 @@ export default function AboutSection() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

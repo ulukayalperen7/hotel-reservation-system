@@ -1,12 +1,17 @@
 import { hotelConfig } from "../../../hotel.config";
-
+import { motion } from "framer-motion";
 
 export default function ServicesSection() {
     return (
-        // The 'id' is for the navigation link in the header.
-        <section id="services" className="bg-white py-16 sm:py-24">
+        <motion.section
+            id="services"
+            className="bg-white py-16 sm:py-24"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.8 }}
+        >
             <div className="container mx-auto px-6 text-center">
-                
                 {/* Section Header */}
                 <h3 className="text-sm font-bold tracking-widest text-amber-500 uppercase">
                     Our Facilities
@@ -18,8 +23,7 @@ export default function ServicesSection() {
                     We offer a wide range of services to make your stay as comfortable and enjoyable as possible, from relaxation to fine dining.
                 </p>
 
-                {/* Services Grid */}
-                {/* Responsive grid: 2 columns on small screens, 4 on larger screens. */}
+                {/* Services Grid: Responsive grid, 2 columns on small screens, 4 on larger screens. */}
                 <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Mapping over the 'services' array from our config file. */}
                     {hotelConfig.services.map((service) => (
@@ -34,6 +38,6 @@ export default function ServicesSection() {
                     ))}
                 </div>
             </div>
-        </section>
+        </motion.section>
     );
 }

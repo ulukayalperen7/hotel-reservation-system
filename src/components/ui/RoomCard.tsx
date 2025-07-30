@@ -2,12 +2,14 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star } from "lucide-react";
+import Link from "next/link";
 
 type RoomCardProps = {
   name: string;
   price: number;
   image: string;
   description: string;
+  roomId: string;
 };
 
 export default function RoomCard({
@@ -15,6 +17,7 @@ export default function RoomCard({
   price,
   image,
   description,
+  roomId,
 }: RoomCardProps) {
   return (
     <motion.div
@@ -136,7 +139,7 @@ export default function RoomCard({
           whileHover={{ y: -2 }}
           transition={{ duration: 0.2 }}
         >
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Link href={`/rooms/${roomId}`}>
             <Button
               variant="outline"
               className="w-full border-2 border-amber-500 text-amber-600 hover:bg-gradient-to-r hover:from-amber-500 hover:to-amber-600 hover:text-white transition-all duration-300 font-semibold py-3 rounded-xl group relative overflow-hidden"
@@ -162,7 +165,7 @@ export default function RoomCard({
                 </motion.div>
               </motion.span>
             </Button>
-          </motion.div>
+          </Link>
         </motion.div>
       </div>
     </motion.div>

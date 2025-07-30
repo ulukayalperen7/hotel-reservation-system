@@ -8,7 +8,7 @@ const hasSearchParams = (searchParams: { [key: string]: string | undefined }): b
     return !!searchParams.checkIn && !!searchParams.checkOut;
 };
 
-export default function SearchPage({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
+export default async function SearchPage({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
 
     // Check if the user came with pre-filled dates or not.
     const userHasSearched = hasSearchParams(searchParams);

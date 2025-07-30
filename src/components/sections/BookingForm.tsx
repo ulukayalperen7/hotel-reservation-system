@@ -27,6 +27,11 @@ export default function BookingForm() {
       alert("Please select both check-in and check-out dates.");
       return; // Stop the function if dates are missing.
     }
+    // Logical validation: check-out cannot be before check-in
+    if (checkOut < checkIn) {
+      alert("Check-out date cannot be before check-in date.");
+      return;
+    }
     
     // This creates a URL-safe query string from our form data.
     // e.g., "checkIn=2025-08-10&checkOut=2025-08-15&adults=2&children=0"
@@ -72,7 +77,7 @@ export default function BookingForm() {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" selected={checkOut} onSelect={setCheckOut} initialFocus />
+              <Calendar mode="single" selected={checkOut} onSelect={setCheckOut} initialFocus disabled={(date) => !!checkIn && date < checkIn} />
             </PopoverContent>
           </Popover>
         </div>

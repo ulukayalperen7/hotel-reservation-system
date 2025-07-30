@@ -2,10 +2,18 @@ import { motion } from 'framer-motion';
 import RoomCard from "@/components/ui/RoomCard";
 import { Button } from "@/components/ui/button";
 import { hotelConfig } from "../../../hotel.config";
+import Link from "next/link";
 
 export default function RoomsSection() {
     return (
-        <section id="rooms" className="bg-gradient-to-br from-slate-50 via-slate-100 to-amber-50 py-16 sm:py-24 relative overflow-hidden">
+        <motion.section
+            id="rooms"
+            className="bg-gradient-to-br from-slate-50 via-slate-100 to-amber-50 py-16 sm:py-24 relative overflow-hidden"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.8 }}
+        >
             {/* Floating background elements for visual depth */}
             <motion.div
                 className="absolute top-10 left-10 w-32 h-32 bg-amber-200/20 rounded-full blur-xl"
@@ -122,6 +130,7 @@ export default function RoomsSection() {
                                 price={room.price}
                                 image={room.image}
                                 description={room.description}
+                                roomId={room.id}
                             />
                         </motion.div>
                     ))}
@@ -145,21 +154,23 @@ export default function RoomsSection() {
                             whileHover={{ opacity: 0.4, scale: 1.1 }}
                             transition={{ duration: 0.3 }}
                         />
-                        <Button 
-                            size="lg" 
-                            className="relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-12 py-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300"
-                        >
-                            <motion.span
-                                initial={{ x: 0 }}
-                                whileHover={{ x: 4 }}
-                                transition={{ duration: 0.2 }}
+                        <Link href="/rooms">
+                            <Button
+                                size="lg"
+                                className="relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-12 py-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300"
                             >
-                                View All Rooms
-                            </motion.span>
-                        </Button>
+                                <motion.span
+                                    initial={{ x: 0 }}
+                                    whileHover={{ x: 4 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    View All Rooms
+                                </motion.span>
+                            </Button>
+                        </Link>
                     </motion.div>
                 </motion.div>
             </div>
-        </section>
+        </motion.section>
     );
 }

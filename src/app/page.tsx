@@ -8,8 +8,8 @@ import AboutSection from '@/components/sections/AboutSection';
 import ContactSection from '@/components/sections/ContactSection';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { hotelConfig } from '../../hotel.config';
-import RoomsSection from '@/components/sections/RoomSection';
 import ServicesSection from '@/components/sections/ServiceSection';
+import RoomsSection from '@/components/sections/RoomSection';
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -50,7 +50,7 @@ export default function Home() {
             />
           ))}
         </div>
-        
+        // cahceccontrol ???  react icons ?   child ilişkisi
         {/* Enhanced gradient overlay */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"

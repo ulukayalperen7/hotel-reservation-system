@@ -1,5 +1,5 @@
 
-"use client";
+"use client"; // we can use language API on documentation 
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
