@@ -13,8 +13,8 @@ interface CheckoutPageProps {
  * The Checkout page for finalizing a reservation.
  * It displays a summary and a form for guest details.
  */
-export default function CheckoutPage({ searchParams }: CheckoutPageProps) {
-  const { offerId } = searchParams;
+export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
+  const { offerId } = await searchParams;
 
   // If for some reason the offerId is missing from the URL, show an error.
   if (!offerId) {
