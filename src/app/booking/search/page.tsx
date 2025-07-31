@@ -71,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   <strong>{adults}</strong> adult(s).
                 </p>
               </div>
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="mt-12 grid grid-cols-1 md-grid-cols-2 lg:grid-cols-3 gap-8">
                 {priceOffers.length > 0 ? (
                   priceOffers.map((offer) => {
                     // For each offer, we find the matching room details from the definitions.
@@ -80,6 +80,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     return (
                       <RoomCard
                         key={offer.id}
+                        // This 'offerId' is the unique identifier for this specific price offer.
+                        // It is passed to the RoomCard so the "Select Offer" button can use it.
+                        offerId={offer.id}
                         roomId={offer["room-type-id"]} 
                         // Name and Image come from the 'definitions' data.
                         name={roomInfo ? roomInfo['room-name'] : offer['room-type']} 
