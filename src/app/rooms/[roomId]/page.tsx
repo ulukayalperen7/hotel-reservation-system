@@ -15,7 +15,7 @@ interface RoomDetailPageProps {
  * It fetches all room definitions and finds the one matching the roomId.
  */
 export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
-  const { roomId } = params;
+  const { roomId } = await params;
   const data = await getHotelDefinitions();
   
   // Find the specific room. We use `==` for type-coercion as param is string, id might be number.
