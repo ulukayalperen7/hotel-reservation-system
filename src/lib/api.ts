@@ -60,7 +60,7 @@ export async function getPriceOffers(fromDate: string, toDate: string, adultCoun
         promocode: '',
     });
 
-    const url = `${baseUrl}/hotel/${hotelId}/price?${params.toString()}`;
+    const url = `${baseUrl}/hotel/${hotelId}/price?${params.toString()}`; // query parematre
     
     console.log(`FETCHING URL: ${url}`); // This logs the final URL to the server terminal.
 
@@ -75,6 +75,41 @@ export async function getPriceOffers(fromDate: string, toDate: string, adultCoun
     if (!response.ok) {
         console.error("API Request Failed with status:", response.status, await response.text());
         throw new Error(`Failed to fetch price offers. Status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+/**
+ * Fetches the main hotel configuration parameters from the API.
+ * It's designed to be called from Server Components.
+ */
+export async function getHotelParams() {
+    const baseUrl = process.env.API_BASE_URL;
+    const hotelId = process.env.HOTEL_ID;
+    const token = process.env.API_BEARER_TOKEN;
+
+    if (!baseUrl || !hotelId || !token) {
+        throw new Error("API environment variables are not configured.");
+    }
+
+    // FIX: The URL now includes the required 'language=TR' query parameter.
+    // The API returned a 400 error because this was missing.
+    const url = `${baseUrl}/hotel/${hotelId}/params?language=TR`;
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'x-captcha': '' 
+        },
+        next: { revalidate: 3600 } 
+    });
+
+    if (!response.ok) {
+        // Log the detailed error from the API to the server console for better debugging.
+        console.error("getHotelParams API request failed:", response.status, await response.text());
+        throw new Error('Failed to fetch hotel parameters.');
     }
 
     return response.json();
