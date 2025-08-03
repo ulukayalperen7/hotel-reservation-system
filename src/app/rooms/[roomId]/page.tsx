@@ -1,97 +1,146 @@
 import { getHotelDefinitions } from '@/lib/api';
 import { notFound } from 'next/navigation';
-import Header from '@/components/layout/Header';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Wifi, Wind, Users, Square, Snowflake, Star, Tv } from 'lucide-react';
+import React from 'react';
 
-// The page component receives `params` which contain the dynamic parts of the URL.
 interface RoomDetailPageProps {
   params: { roomId: string };
 }
 
 /**
- * Renders the detailed page for a single room type.
- * It fetches all room definitions and finds the one matching the roomId.
+ * A reusable component for a single, beautifully styled room feature.
  */
+const FeatureCard = ({ IconComponent, title, subtitle }: { IconComponent: React.ElementType, title: string, subtitle: string }) => (
+  <div className="bg-white/50 border border-slate-200/50 rounded-lg p-4 flex items-center shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-amber-100 p-3 rounded-md mr-4">
+      <IconComponent className="h-6 w-6 text-amber-600" />
+    </div>
+    <div>
+      <h4 className="font-semibold text-slate-800">{title}</h4>
+      <p className="text-sm text-slate-500">{subtitle}</p>
+    </div>
+  </div>
+);
+
 export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
   const { roomId } = await params;
   const data = await getHotelDefinitions();
   
-  // Find the specific room. We use `==` for type-coercion as param is string, id might be number.
   const room = data.roomtype.find((r: any) => r['room-id'] == roomId);
 
-  // If a room with the given ID doesn't exist, show the default 404 page.
   if (!room) {
     notFound();
   }
 
-  // A simple helper to parse the comma-separated features from the 'room-property' string.
-  const roomFeatures = room['room-property']?.split(',').map((feature: string) => feature.trim()) || [];
+  // Define the list of features based on API data.
+  const features = [
+    { 
+      Icon: Users, 
+      title: `Up to ${room['room-rules']?.['max-pax-capacity'] || 'N/A'} Guests`, 
+      subtitle: "Maximum occupancy", 
+      isAvailable: !!room['room-rules']?.['max-pax-capacity'] 
+    },
+    { 
+      Icon: Square, 
+      title: `${room['room-area'] || 'N/A'} m²`, 
+      subtitle: "Room size", 
+      isAvailable: !!room['room-area'] 
+    },
+    { 
+      Icon: Tv, 
+      title: "Smart TV", 
+      subtitle: "Entertainment system", 
+      isAvailable: true 
+    },
+    { 
+      Icon: Snowflake, 
+      title: "Climate Control", 
+      subtitle: "Individual temperature control", 
+      isAvailable: true
+    },
+    { 
+      Icon: Wind, 
+      title: "Private Balcony", 
+      subtitle: "Enjoy the view", 
+      isAvailable: room['room-has-balcony']
+    },
+    { 
+      Icon: Wifi, 
+      title: "Free Wi-Fi", 
+      subtitle: "High-speed internet", 
+      isAvailable: room['room-has-wifi']
+    },
+  ];
 
   return (
-    <>
-      <Header />
-      <div className="bg-white">
-        <div className="container mx-auto px-6 pt-32 pb-16">
-          {/* Top section with the main room image and title */}
-          <div className="relative w-full h-[60vh] max-h-[500px] rounded-lg overflow-hidden shadow-2xl mb-12">
-            <Image
-              src={room['room-image-url'] || '/placeholder.jpg'} // Uses a fallback if no image exists
-              alt={`Main image of ${room['room-name']}`}
-              fill
-              className="object-cover"
-              priority // Prioritizes loading of this critical image
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-8">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-white" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>
-                {room['room-name']}
-              </h1>
+    <div className="bg-slate-50 min-h-screen">
+      <div className="container mx-auto px-6 pt-32 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+          
+          <div className="lg:col-span-2">
+            <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-xl border sticky top-32">
+              <Image
+                src={room['room-image-url'] || '/placeholder.jpg'}
+                alt={`Main image of ${room['room-name']}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                priority
+              />
+              <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center text-sm font-semibold text-slate-700">
+                <Users className="h-4 w-4 mr-2" />
+                <span>{room['room-rules']?.['max-pax-capacity']} guests</span>
+              </div>
             </div>
           </div>
-          
-          {/* Main content grid with details and call-to-action */}
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {/* Left Column: Details and Features */}
-            <div className="md:col-span-2">
-              <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-4 mb-6">
-                Room Details
-              </h2>
-              <p className="text-slate-600 leading-relaxed">
-                A spacious and elegantly designed room offering comfort and luxury. Perfect for both leisure and business travelers seeking a memorable stay. Find detailed features below.
-              </p>
-              
-              <h3 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-2 mt-10 mb-6">
-                What this room offers
-              </h3>
-              <ul className="grid grid-cols-2 gap-x-6 gap-y-3 text-slate-700">
-                {roomFeatures.map((feature: string, index: number) => (
-                  <li key={index} className="flex items-center">
-                    <span className="text-amber-500 mr-2.5">✓</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+
+          <div className="lg:col-span-3">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
+              {room['room-name']}
+            </h1>
+            <div className="flex items-center border-l-4 border-amber-400 pl-4">
+                <h2 className="text-2xl font-bold text-slate-800">Room Features</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              {features.map((feature) => 
+                feature.isAvailable && (
+                  <FeatureCard 
+                    key={feature.title}
+                    IconComponent={feature.Icon} // Pass the component itself, not calling it
+                    title={feature.title}
+                    subtitle={feature.subtitle}
+                  />
+                )
+              )}
             </div>
 
-            {/* Right Column: Booking Call-to-Action */}
-            <div className="md:col-span-1">
-              <div className="bg-slate-50 rounded-lg p-6 shadow-md border border-slate-200 sticky top-32">
-                <h3 className="text-xl font-bold text-slate-900 mb-4">Ready to Book?</h3>
-                <p className="text-slate-500 mb-6">
-                  Select your travel dates on our search page to get the best available price for the {room['room-name']}.
-                </p>
-                <Link href="/booking/search">
-                  <Button size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3">
-                    Check Prices
-                  </Button>
-                </Link>
+            <div className="mt-12 bg-white rounded-lg p-8 shadow-lg border border-slate-200/60">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-bold text-slate-900">Ready to Book?</h3>
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-amber-400 fill-current" />)}
+                </div>
               </div>
+              <p className="text-slate-500 mb-6">
+                Select your travel dates to get the best rates for the <strong>{room['room-name']}</strong> with instant confirmation.
+              </p>
+              <ul className="space-y-3 mb-8">
+                  <li className="flex items-center text-slate-600"><Star className="h-4 w-4 mr-3 text-green-500" /> Best price guarantee</li>
+                  <li className="flex items-center text-slate-600"><Star className="h-4 w-4 mr-3 text-green-500" /> Free cancellation options</li>
+              </ul>
+              <Link href="/booking/search">
+                <Button size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 text-lg">
+                  Check Availability & Prices
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

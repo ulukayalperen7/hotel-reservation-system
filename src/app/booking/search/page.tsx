@@ -28,7 +28,7 @@ type RoomDetail = {
 };
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { checkIn, checkOut, adults = "1", children = "0" } = searchParams;
+  const { checkIn, checkOut, adults = "1", children = "0" } = await searchParams;
   const userHasSearched = !!checkIn && !!checkOut;
 
   let priceOffers: Offer[] = [];
