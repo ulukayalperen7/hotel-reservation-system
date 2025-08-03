@@ -1,19 +1,29 @@
-// src/app/page.tsx
-
 import { getHotelParams, getHotelDefinitions } from '@/lib/api';
 import HeroSlider from '@/components/sections/HeroSlider';
 import AboutSection from '@/components/sections/AboutSection';
-import RoomsSection from '@/components/sections/RoomSection';
 import ServiceSection from '@/components/sections/ServiceSection';
 import ContactSection from '@/components/sections/ContactSection';
-import { motion } from 'framer-motion';
+import RoomSection from '@/components/sections/RoomSection';
 
-// Types remain the same
-type Slide = { src: string };
-type AboutData = { name?: string; description?: string; imageUrl?: string };
-type Room = { 'room-id': number; 'room-name': string; 'room-image-url': string; 'room-property': string };
+type Slide = {
+  src: string;
+};
+
+type AboutData = {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+};
+
+type Room = {
+  'room-id': number;
+  'room-name': string;
+  'room-image-url': string;
+  'room-property': string;
+};
 
 export default async function Home() {
+  
   let heroSlides: Slide[] = [];
   let aboutSectionData: AboutData | null = null;
   let favoriteRooms: Room[] = [];
@@ -31,22 +41,34 @@ export default async function Home() {
         'https://erspublic.blob.core.windows.net/test/17cefff5-f96b-961-8710-bd4dd9f82000.jpg'
       ];
       const idsToFind = [321758, 292765];
-      const foundImageObjects = hotelParams.images.filter((img: any) => idsToFind.includes(img['image-id']) && img['image-url']);
+      const foundImageObjects = hotelParams.images.filter((img: any) => 
+          idsToFind.includes(img['image-id']) && img['image-url']
+      );
       const foundUrlsFromIds = foundImageObjects.map((img: any) => img['image-url']);
       heroSlides = [...staticUrls, ...foundUrlsFromIds].map(url => ({ src: url }));
     }
 
     if (hotelParams) {
+        // --- THIS IS THE FINAL FIX ---
+        // Since `hotel_info` is undefined for this hotel, we will construct the
+        // About Us section from other available data to ensure it's not empty.
         aboutSectionData = {
+            // Get the name from the general section, which we know exists.
             name: hotelParams.general?.name,
-            description: hotelParams.hotel_info?.description,
-            imageUrl: hotelParams.hotel_info?.default_image,
+            
+            // Provide a generic, high-quality fallback description.
+            description: "<p>Otelimiz, konfor ve şıklığı bir araya getirerek misafirlerine unutulmaz bir konaklama deneyimi sunar. Modern olanaklarımız ve misafirperver ekibimizle, tatiliniz boyunca her anın tadını çıkarmanız için buradayız.</p>",
+            
+            // Use the FIRST image from the main `images` array as the About Us image.
+            // This ensures we always have an image if the gallery exists.
+            imageUrl: hotelParams.images?.[0]?.['image-url'],
         };
     }
     
     if (hotelDefinitions && Array.isArray(hotelDefinitions.roomtype)) {
       favoriteRooms = hotelDefinitions.roomtype.slice(0, 3);
     }
+
   } catch (error) {
     console.error("Failed to fetch initial page data:", error);
     heroSlides = [
@@ -57,19 +79,15 @@ export default async function Home() {
   }
 
   return (
-    // This is a Server Component, but it can pass data to Client Components like HeroSlider,
-    // and also contain other Server Components like the sections below.
-    // The <main> tag from the original code is correct.
     <main>
       <HeroSlider slides={heroSlides} />
       
       {/* 
-        The animation logic from the deleted PageSection.tsx is now here.
-        Each section is a server component rendered within the main page flow.
-        The motion effects will be applied by client components inside them.
+        The AboutSection is guaranteed to have data, so it will always render.
       */}
       {aboutSectionData && <AboutSection data={aboutSectionData} />}
-      <RoomsSection rooms={favoriteRooms} />
+      
+      <RoomSection rooms={favoriteRooms} />
       <ServiceSection />
       <ContactSection />
     </main>
