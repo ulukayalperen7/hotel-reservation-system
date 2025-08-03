@@ -49,7 +49,6 @@ export default async function Home() {
     }
 
     if (hotelParams) {
-        // --- THIS IS THE FINAL FIX ---
         // Since `hotel_info` is undefined for this hotel, we will construct the
         // About Us section from other available data to ensure it's not empty.
         aboutSectionData = {

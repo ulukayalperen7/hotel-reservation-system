@@ -1,29 +1,32 @@
+// src/components/sections/RoomSection.tsx
+
 "use client";
 
 import { motion } from 'framer-motion';
-import RoomCard from "@/components/ui/RoomCard";
+import RoomCard from "@/components/ui/RoomCard"; 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-// Defines the expected structure of a single room object.
+/**
+ * The data structure for a single room object.
+ */
 type Room = {
     'room-id': number;
     'room-name': string;
     'room-image-url': string;
-    'room-property': string;
 };
 
-// Defines the props for the RoomsSection component.
+/**
+ * The properties that the RoomsSection component accepts.
+ */
 type RoomsSectionProps = {
     rooms: Room[];
 };
 
 /**
  * A client-side component that displays a section for "favorite rooms".
- * It receives room data via props and dynamically renders a list of RoomCard components.
  */
-export default function RoomsSection({ rooms }: RoomsSectionProps) {
-    // If there are no rooms, the component renders nothing.
+export default function RoomSection({ rooms }: RoomsSectionProps) {
     if (!rooms || rooms.length === 0) {
         return null;
     }
@@ -34,16 +37,12 @@ export default function RoomsSection({ rooms }: RoomsSectionProps) {
             className="bg-gradient-to-br from-slate-50 via-slate-100 to-amber-50 py-16 sm:py-24 relative overflow-hidden"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }} // Adjusted amount for earlier trigger
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
         >
-            {/* Background decorative elements are preserved. */}
-            <motion.div /* ...omitted for brevity... */ />
-            <motion.div /* ...omitted for brevity... */ />
-            
             <div className="container mx-auto px-6 text-center relative z-10">
                 
-                <motion.div /* ...Header animation preserved... */ >
+                <div>
                     <h3 className="text-sm font-bold tracking-widest text-amber-500 uppercase">
                         ACCOMMODATION
                     </h3>
@@ -53,12 +52,11 @@ export default function RoomsSection({ rooms }: RoomsSectionProps) {
                     <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
                         Each of our rooms is designed with your comfort in mind, blending modern amenities with elegant style. Find your perfect sanctuary with us.
                     </p>
-                </motion.div>
+                </div>
 
-                <motion.div 
+                <div 
                     className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
-                    {/* The static map is replaced with a dynamic one using the 'rooms' prop. */}
                     {rooms.map((room, index) => (
                         <motion.div
                             key={room['room-id']}
@@ -72,18 +70,17 @@ export default function RoomsSection({ rooms }: RoomsSectionProps) {
                             }}
                         >
                             <RoomCard
-                                // Mapping API data fields to RoomCard props.
+                                // The problematic 'description' prop is now removed,
+                                // aligning with the simplified RoomCard component.
                                 roomId={room['room-id']}
                                 name={room['room-name']}
                                 image={room['room-image-url']}
-                                description={room['room-property']}
-                                // 'price' and 'offerId' are intentionally not passed here.
                             />
                         </motion.div>
                     ))}
-                </motion.div>
+                </div>
                                 
-                <motion.div /* ...Button animation preserved... */ >
+                <div className="mt-12">
                     <Link href="/rooms">
                         <Button
                             size="lg"
@@ -92,7 +89,7 @@ export default function RoomsSection({ rooms }: RoomsSectionProps) {
                             View All Rooms
                         </Button>
                     </Link>
-                </motion.div>
+                </div>
             </div>
         </motion.section>
     );
