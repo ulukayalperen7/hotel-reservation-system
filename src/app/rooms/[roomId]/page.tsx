@@ -35,7 +35,10 @@ export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
     notFound();
   }
 
-  // Define the list of features based on API data.
+  // This constructs the URL for the "Check Availability" button.
+  // It directs the user to the search page, pre-selecting the current room by its ID.
+  const searchUrlWithRoomId = `/booking/search?roomId=${room['room-id']}`;
+
   const features = [
     { 
       Icon: Users, 
@@ -49,30 +52,10 @@ export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
       subtitle: "Room size", 
       isAvailable: !!room['room-area'] 
     },
-    { 
-      Icon: Tv, 
-      title: "Smart TV", 
-      subtitle: "Entertainment system", 
-      isAvailable: true 
-    },
-    { 
-      Icon: Snowflake, 
-      title: "Climate Control", 
-      subtitle: "Individual temperature control", 
-      isAvailable: true
-    },
-    { 
-      Icon: Wind, 
-      title: "Private Balcony", 
-      subtitle: "Enjoy the view", 
-      isAvailable: room['room-has-balcony']
-    },
-    { 
-      Icon: Wifi, 
-      title: "Free Wi-Fi", 
-      subtitle: "High-speed internet", 
-      isAvailable: room['room-has-wifi']
-    },
+    { Icon: Tv, title: "Smart TV", subtitle: "Entertainment system", isAvailable: true },
+    { Icon: Snowflake, title: "Climate Control", subtitle: "Individual temperature control", isAvailable: true },
+    { Icon: Wind, title: "Private Balcony", subtitle: "Enjoy the view", isAvailable: room['room-has-balcony'] },
+    { Icon: Wifi, title: "Free Wi-Fi", subtitle: "High-speed internet", isAvailable: room['room-has-wifi'] },
   ];
 
   return (
@@ -98,9 +81,7 @@ export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
           </div>
 
           <div className="lg:col-span-3">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
-              {room['room-name']}
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">{room['room-name']}</h1>
             <div className="flex items-center border-l-4 border-amber-400 pl-4">
                 <h2 className="text-2xl font-bold text-slate-800">Room Features</h2>
             </div>
@@ -110,7 +91,7 @@ export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
                 feature.isAvailable && (
                   <FeatureCard 
                     key={feature.title}
-                    IconComponent={feature.Icon} // Pass the component itself, not calling it
+                    IconComponent={feature.Icon}
                     title={feature.title}
                     subtitle={feature.subtitle}
                   />
@@ -132,7 +113,7 @@ export default async function RoomDetailPage({ params }: RoomDetailPageProps) {
                   <li className="flex items-center text-slate-600"><Star className="h-4 w-4 mr-3 text-green-500" /> Best price guarantee</li>
                   <li className="flex items-center text-slate-600"><Star className="h-4 w-4 mr-3 text-green-500" /> Free cancellation options</li>
               </ul>
-              <Link href="/booking/search">
+              <Link href={searchUrlWithRoomId}>
                 <Button size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 text-lg">
                   Check Availability & Prices
                 </Button>

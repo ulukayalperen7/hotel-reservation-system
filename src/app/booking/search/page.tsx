@@ -31,6 +31,8 @@ interface SearchPageProps {
     checkOut?: string;
     adults?: string;
     children?: string;
+    // Includes the optional roomId to filter the search results.
+    roomId?: string;
   };
 }
 
@@ -43,8 +45,7 @@ function calculateNights(checkIn: string, checkOut: string): number {
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  // Await the searchParams object itself and destructure its properties.
-  const { checkIn, checkOut, adults = "1", children = "0" } = await searchParams;
+  const { checkIn, checkOut, adults = "1", children = "0", roomId } = await searchParams;
 
   const userHasSearched = !!(checkIn && checkOut);
 
@@ -61,6 +62,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       const allRoomDetails: RoomDetail[] = definitionsData?.roomtype || [];
       const allBoardTypes: BoardType[] = definitionsData?.boardtypes || [];
 
+      // This logic filters all available offers.
+      // If a `roomId` exists in the URL, it only keeps offers that match that room's ID.
+      // Otherwise, it keeps all offers.
+      const filteredOffers = roomId 
+        ? priceOffers.filter(offer => offer['room-type-id'].toString() === roomId)
+        : priceOffers;
+
       return (
         <div className="pt-32 bg-slate-50 min-h-screen">
           <div className="container mx-auto px-6 py-12">
@@ -72,8 +80,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </p>
             </div>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {priceOffers.length > 0 ? (
-                priceOffers.map((offer) => {
+              {filteredOffers.length > 0 ? (
+                filteredOffers.map((offer) => {
                   const roomInfo = allRoomDetails.find(r => r["room-id"] === offer["room-type-id"]);
                   const boardInfo = allBoardTypes.find(b => b.id === offer["board-type-id"]);
                   const totalPrice = offer["discounted-price"] || offer.price;
@@ -95,7 +103,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 })
               ) : (
                 <div className="col-span-full text-center py-16">
-                  <p className="text-xl text-slate-500">Sorry, no offers were found for the selected dates.</p>
+                  <p className="text-xl text-slate-500">Sorry, no offers were found for the selected dates and room type.</p>
                 </div>
               )}
             </div>
@@ -108,7 +116,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     }
   }
 
-  // Returns the default view if no search was made.
+  // Returns the default view with the booking form.
   return (
     <div className="pt-32 bg-slate-50 min-h-screen">
       <div className="container mx-auto px-6 py-12">
