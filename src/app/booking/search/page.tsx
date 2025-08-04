@@ -1,9 +1,10 @@
-// src/app/booking/search/page.tsx
-
 import BookingForm from "@/components/sections/BookingForm";
 import RoomCard from "@/components/ui/RoomCard";
 import { getPriceOffers, getHotelDefinitions } from "@/lib/api";
 
+/**
+ * Defines the properties expected in the URL search parameters.
+ */
 interface SearchPageProps {
   searchParams: { 
     checkIn?: string;
@@ -13,12 +14,18 @@ interface SearchPageProps {
   } 
 }
 
+/**
+ * Defines the structure for various data types from the API for clarity.
+ */
 type Offer = {
     id: string;
     'room-type-id': number;
     'room-type': string;
-    'discounted-price'?: number;
+    'board-type-id': number;
+    'rate-type-id': number;
+    'is-refundable': boolean;
     price: number;
+    'discounted-price'?: number;
 };
 
 type RoomDetail = {
@@ -27,12 +34,22 @@ type RoomDetail = {
     'room-image-url': string;
 };
 
+type BoardType = {
+    id: number;
+    name: string;
+};
+
+/**
+ * The server component for the search page. It fetches and displays available
+ * price offers, enriching them with detailed definitions for a better user experience.
+ */
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { checkIn, checkOut, adults = "1", children = "0" } = await searchParams;
   const userHasSearched = !!checkIn && !!checkOut;
 
   let priceOffers: Offer[] = [];
   let allRoomDetails: RoomDetail[] = [];
+  let allBoardTypes: BoardType[] = [];
 
   if (userHasSearched) {
       try {
@@ -44,8 +61,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           if (offersData && Array.isArray(offersData)) {
               priceOffers = offersData;
           }
-          if (definitionsData && Array.isArray(definitionsData.roomtype)) {
-              allRoomDetails = definitionsData.roomtype;
+          if (definitionsData) {
+              if(Array.isArray(definitionsData.roomtype)) allRoomDetails = definitionsData.roomtype;
+              if(Array.isArray(definitionsData.boardtypes)) allBoardTypes = definitionsData.boardtypes;
           }
       } catch (error) {
           console.error("Error fetching data on search page:", error);
@@ -53,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   return (
-    <div className="pt-32 bg-white min-h-screen">
+    <div className="pt-32 bg-slate-50 min-h-screen">
       <div className="container mx-auto px-6 py-12">
         {userHasSearched ? (
           <div>
@@ -69,7 +87,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {priceOffers.length > 0 ? (
                 priceOffers.map((offer) => {
+                  // Finds the corresponding room details for each offer.
                   const roomInfo = allRoomDetails.find(room => room['room-id'] === offer['room-type-id']);
+                  // Finds the full board type name (e.g., "Yarım Pansiyon") using the ID.
+                  const boardInfo = allBoardTypes.find(board => board.id === offer['board-type-id']);
+                  
                   return (
                     <RoomCard
                       key={offer.id}
@@ -78,7 +100,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       name={roomInfo ? roomInfo['room-name'] : offer['room-type']} 
                       image={roomInfo ? roomInfo['room-image-url'] : "/placeholder.jpg"}
                       price={Math.round(offer["discounted-price"] || offer.price)}
-                      // The 'description' prop is now removed to match the updated RoomCard component.
+                      boardType={boardInfo ? boardInfo.name : 'Special Offer'}
+                      isRefundable={offer['is-refundable']}
                     />
                   );
                 })

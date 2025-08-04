@@ -13,7 +13,7 @@ export async function getHotelDefinitions() {
         throw new Error("API environment variables are not configured.");
     }
 
-    const url = `${baseUrl}/hotel/${hotelId}/hotel-definitions?language=TR`;
+    const url = `${baseUrl}/hotel/${hotelId}/hotel-definitions?language=TR&room-details=true`;
 
     const response = await fetch(url, {
         method: 'GET',

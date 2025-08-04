@@ -1,17 +1,13 @@
-// src/components/ui/RoomCard.tsx
-
 "use client"; 
 
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Star, Square, Users, Wind, Wifi } from "lucide-react";
+import { ArrowRight, Star, CheckCircle2, XCircle } from "lucide-react";
 
 /**
- * The properties that the RoomCard component accepts.
- * Instead of a generic 'description', it now accepts specific, structured data
- * to build the features list, allowing for a more consistent and robust design.
+ * Defines the properties that the RoomCard component accepts.
  */
 type RoomCardProps = {
   name: string;
@@ -19,60 +15,69 @@ type RoomCardProps = {
   roomId: string | number;
   price?: number;
   offerId?: string;
-  // Dynamic features data pulled from the API
-  area?: number;
-  capacity?: number;
-  hasBalcony?: boolean;
-  hasWifi?: boolean;
+  boardType?: string;
+  isRefundable?: boolean;
 };
 
 /**
  * A client-side component to display a single, animated room card.
- * It now uses a combination of curated static text and dynamic, icon-based features
- * to create a professional and informative summary of the room.
  */
-export default function RoomCard({ name, image, roomId, price, offerId, area, capacity, hasBalcony, hasWifi }: RoomCardProps) {
+export default function RoomCard({ name, image, roomId, price, offerId, boardType, isRefundable }: RoomCardProps) {
   const imageUrl = image || "/placeholder-image.jpg"; 
 
   /**
-   * Defines a mapping of specific room names to curated, static descriptions.
-   * This provides a professional marketing text instead of relying on inconsistent API data.
+   * Provides a curated static description for different room types,
+   * used when no specific offer details (like boardType) are available.
    */
   const staticDescriptions: { [key: string]: string } = {
     'Suit': "Geniş yaşam alanı ve lüks detaylarla donatılmış, unutulmaz bir konaklama deneyimi.",
     'Ekonomik': "Konforlu ve pratik bir konaklama için ihtiyacınız olan her şey.",
     'B Suites': "Modern tasarım ve üstün konforu bir arada sunan şık bir kaçış noktası.",
+    'Standart': "Konforunuz için tasarlanmış şık ve modern bir oda.",
   };
 
-  // Selects the appropriate static description or provides a default fallback.
-  const displayDescription = staticDescriptions[name] || "Konforunuz için tasarlanmış şık ve modern bir oda.";
+  /**
+   * Renders the main content of the card's body, which changes based on
+   * whether it's displaying a general room or a specific price offer.
+   */
+  const CardContent = () => (
+    <>
+      <h3 className="text-xl font-bold text-slate-800 mb-2 truncate">{name}</h3>
+      <div className="flex-grow min-h-[40px]">
+        {boardType ? (
+          <p className="text-amber-700 text-sm font-semibold">{boardType}</p>
+        ) : (
+          <p className="text-slate-500 text-sm leading-relaxed">
+            {staticDescriptions[name] || "Konforunuz için tasarlanmış şık ve modern bir oda."}
+          </p>
+        )}
+      </div>
+    </>
+  );
 
   /**
-   * Dynamically builds a list of available room features to display with icons.
-   * Only features with valid data from the API are included.
+   * Renders the footer of the card, which shows offer-specific details
+   * like cancellation policy and the "Select Offer" button.
    */
-  const features = [
-    {
-      Icon: Square,
-      label: `${area} m²`,
-      isAvailable: !!area,
-    },
-    {
-      Icon: Users,
-      label: `${capacity} Kişilik`,
-      isAvailable: !!capacity,
-    },
-    {
-      Icon: Wind,
-      label: 'Balkonlu',
-      isAvailable: hasBalcony === true,
-    },
-    {
-      Icon: Wifi,
-      label: 'Wi-Fi',
-      isAvailable: hasWifi === true,
-    },
-  ];
+  const CardFooter = () => (
+    <div className="mt-auto pt-4 border-t border-slate-100/80">
+      {typeof isRefundable === 'boolean' && (
+        <div className={`flex items-center text-xs mb-3 ${isRefundable ? 'text-green-600' : 'text-red-600'}`}>
+          {isRefundable ? <CheckCircle2 className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
+          <span className="font-medium">{isRefundable ? 'Free Cancellation' : 'Non-refundable'}</span>
+        </div>
+      )}
+      <Link href={`/booking/checkout?offerId=${offerId}`}>
+        <Button
+          variant="outline"
+          className="w-full border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-semibold rounded-xl group"
+        >
+          Select Offer
+          <ArrowRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+        </Button>
+      </Link>
+    </div>
+  );
 
   return (
     <motion.div
@@ -100,38 +105,9 @@ export default function RoomCard({ name, image, roomId, price, offerId, area, ca
             </div>
         )}
         
-        <h3 className="text-xl font-bold text-slate-800 mb-2 truncate">{name}</h3>
+        <CardContent />
         
-        <p className="text-slate-500 text-sm leading-relaxed flex-grow min-h-[40px]">
-          {displayDescription}
-        </p>
-
-        {/* This container renders the list of dynamic features with their icons. */}
-        <div className="grid grid-cols-2 gap-y-3 gap-x-4 mt-4 pt-4 border-t border-slate-100">
-          {features.map((feature, index) => 
-            feature.isAvailable && (
-              <div key={index} className="flex items-center text-slate-600 text-sm">
-                <feature.Icon className="h-4 w-4 mr-2 text-amber-500 flex-shrink-0" />
-                <span>{feature.label}</span>
-              </div>
-            )
-          )}
-        </div>
-        
-        {/* This button remains conditional, appearing only when an offer is available. */}
-        {offerId && (
-            <div className="mt-6">
-              <Link href={`/booking/checkout?offerId=${offerId}`}>
-                <Button
-                  variant="outline"
-                  className="w-full border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-semibold rounded-xl group"
-                >
-                  Select Offer
-                  <ArrowRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </Link>
-            </div>
-        )}
+        {offerId && <CardFooter />}
       </div>
     </motion.div>
   );
